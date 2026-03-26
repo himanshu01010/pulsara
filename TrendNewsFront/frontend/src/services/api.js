@@ -41,7 +41,7 @@ export const trendsApi = {
 
   // POST /api/trends/generate-and-save — full pipeline
   generateAndSave: () =>
-    api.post('/api/trends/generate-and-save').then((r) => r.data),
+    api.post('/api/trends/generate-and-save', {}, { timeout: 180000 }).then((r) => r.data),
 
   // POST /api/trends/refresh-cache — force fresh scrape
   refreshCache: () =>
