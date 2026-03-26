@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { authApi } from '../services/api'
+import { clearStoredToken, clearStoredUser, getStoredUser, storeUser } from '../utils/authStorage'
 
 const AuthContext = createContext(null)
 
@@ -8,20 +9,13 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    try {
-      const savedUser = localStorage.getItem('pulsara_user')
-      setUser(savedUser ? JSON.parse(savedUser) : null)
-    } catch {
-      setUser(null)
-      localStorage.removeItem('pulsara_user')
-    } finally {
-      setLoading(false)
-    }
+    setUser(getStoredUser())
+    setLoading(false)
   }, [])
 
  const login = (userData) => {
   setUser(userData)
-  localStorage.setItem('pulsara_user', JSON.stringify(userData))
+  storeUser(userData)
 }
 
   const loginWithGoogle = () => {
@@ -34,13 +28,14 @@ export function AuthProvider({ children }) {
     await authApi.logout()
   } catch {}
   setUser(null)
-  localStorage.removeItem('pulsara_user')
+  clearStoredUser()
+  clearStoredToken()
 }
 
   const updateUser = (updates) => {
     const updated = { ...user, ...updates }
     setUser(updated)
-    localStorage.setItem('pulsara_user', JSON.stringify(updated))
+    storeUser(updated)
   }
 
   return (

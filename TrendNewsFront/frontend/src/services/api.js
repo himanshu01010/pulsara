@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { clearStoredToken, clearStoredUser, getStoredToken } from '../utils/authStorage'
 
 // ── Axios Instance ────────────────────────────────────────
 const api = axios.create({
@@ -8,18 +9,21 @@ const api = axios.create({
   withCredentials:true
 })
 
-// Attach auth token to every request
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem('pulsara_token')
-//   if (token) config.headers.Authorization = `Bearer ${token}`
-//   return config
-// })
+api.interceptors.request.use((config) => {
+  const token = getStoredToken()
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
 
 // Handle 401 globally
 api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
+      clearStoredToken()
+      clearStoredUser()
       window.location.href = '/login'
     }
 

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.AuthResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.security.JwtUtil;
 
@@ -38,8 +39,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest req,
-                                        HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest req,
+                                              HttpServletResponse response) {
 
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -55,7 +56,7 @@ public class AuthController {
         ResponseCookie jwtCookie = createJwtCookie(token);
         response.setHeader("Set-Cookie", jwtCookie.toString());
 
-        return ResponseEntity.ok("Login successful");
+        return ResponseEntity.ok(new AuthResponse("Login successful", token, email));
     }
 
     // 🔥 Logout

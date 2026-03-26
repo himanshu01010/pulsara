@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Eye, EyeOff, Zap } from 'lucide-react'
 import LightOrbs from '../components/ui/LightOrbs';
 import { authApi } from '../services/api';
+import { storeToken } from '../utils/authStorage';
 
 const AuthPage= ()=> {
     const [mode,setMode] = useState('login');
@@ -22,10 +23,14 @@ const AuthPage= ()=> {
 
   try {
     if (mode === 'login') {
-      await authApi.login({
+      const response = await authApi.login({
         email: form.email,
         password: form.password,
       })
+
+      if (response?.token) {
+        storeToken(response.token)
+      }
     } else {
       await authApi.signup({
         fullname: form.name,
