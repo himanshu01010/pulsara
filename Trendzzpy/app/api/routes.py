@@ -27,6 +27,17 @@ async def process_single_trend(tag: str) -> Article | None:
         return None
 
 
+async def process_single_trend_with_timeout(tag: str) -> Article | None:
+    try:
+        return await asyncio.wait_for(
+            process_single_trend(tag),
+            timeout=settings.PER_TREND_TIMEOUT_SECONDS
+        )
+    except asyncio.TimeoutError:
+        print(f"[routes] Timeout while processing: {tag}")
+        return None
+
+
 @router.post("/process-trends", response_model=ContentResponse)
 async def process_trends(request: TrendRequest):
 
@@ -42,10 +53,11 @@ async def process_trends(request: TrendRequest):
     for tag in trends:
         print(f"🚀 Processing: {tag}")
 
-        article = await process_single_trend(tag)
+        article = await process_single_trend_with_timeout(tag)
         results.append(article)
 
-        await asyncio.sleep(2)
+        if settings.TREND_PROCESS_DELAY_SECONDS > 0:
+            await asyncio.sleep(settings.TREND_PROCESS_DELAY_SECONDS)
 
     articles = [a for a in results if a]
 
