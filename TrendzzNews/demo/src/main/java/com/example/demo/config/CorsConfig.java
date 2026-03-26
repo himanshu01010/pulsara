@@ -14,7 +14,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/**")
-                        .allowedOrigins("https://trend-news-frontend.onrender.com","http://localhost:5173")
+                        .allowedOrigins("https://trend-news-frontend.onrender.com","http://localhost:5173","https://pulsara-frontend.vercel.app","https://pulsara-python.onrender.com")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*") // 🔥 IMPORTANT
                         .allowCredentials(true);
