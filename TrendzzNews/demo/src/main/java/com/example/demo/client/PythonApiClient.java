@@ -2,7 +2,7 @@ package com.example.demo.client;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.cache.annotation.Cacheable;
+// import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -19,7 +19,7 @@ public class PythonApiClient {
     }
 
 
-    @Cacheable(value = "generatedContent", key = "#trends.stream().sorted().collect(T(java.util.stream.Collectors).joining(','))")
+    // @Cacheable(value = "generatedContent", key = "#trends.stream().sorted().collect(T(java.util.stream.Collectors).joining(','))")
     public ContentResponseDTO processTrends(List<String> trends){
         System.out.println("[Cache MISS] Calling Python FastAPI / Google AI...");
         try{
